@@ -1,6 +1,10 @@
 import sys
 input = sys.stdin.readline
 
+# 백트래킹
+# n 인덱스 및 몇번 반복했는지
+# sum 선택한 정수들의 합
+# 선택한 정수의 개수
 def backtracking(n, sum, count):
     
     global answer
@@ -20,10 +24,10 @@ def backtracking(n, sum, count):
         
 
 N, S = map(int, input().strip().split())
+
 nums = list(map(int, input().strip().split()))
 
 answer = 0
 
 backtracking(0, 0, 0)
-
 print(answer)
