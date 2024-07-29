@@ -1,44 +1,60 @@
-import sys
-input = sys.stdin.readline
+result = {}
+team = ['A','B','C','D','E','F']
+allMatch = []
 
-# 백트래킹 함수 정의
-def backtracking(pre_word, picked):
-    # 만약 모든 문자를 선택했다면, 가능한 경우 하나를 찾은 것이므로 1을 반환
-    if picked == len(S):
-        return 1
-
-    answer = 0  # 가능한 경우의 수를 저장할 변수
-    # 모든 문자를 키로 가지는 딕셔너리 counter를 순회
-    for key in counter.keys():
-        # 이전에 선택한 문자와 현재 선택하려는 문자가 같다면 건너뜀
-        if pre_word == key:
-            continue
-        # 현재 문자의 개수가 0이라면 건너뜀
-        if counter[key] == 0:
-            continue
+for i in range(6):
+    for j in range(i+1,6):
+        allMatch.append([team[i],team[j]])
         
-        # 현재 문자를 선택하고 개수를 감소
-        counter[key] -= 1
-        # 재귀 호출하여 다음 문자를 선택
-        answer += backtracking(key, picked + 1)
-        # 재귀 호출이 끝난 후 선택한 문자의 개수를 복구
-        counter[key] += 1
-    
-    return answer
+position = {'A': 0, 'B': 3, 'C': 6, 'D': 9, 'E': 12, 'F': 15}
 
-# 입력받은 문자열을 리스트로 변환
-S = list(input().strip())
+def match(a,b,status,note,depth) :
 
-# 각 문자의 개수를 세어 저장할 딕셔너리 초기화
-counter = dict()
-for s in S:
-    if s in counter:
-        counter[s] += 1
+    if status == 0: #승
+        aIDX = position[a]
+        bIDX = position[b]
+        note[aIDX] += 1
+        note[bIDX+2] += 1
+        if answer[aIDX] < note[aIDX] or answer[bIDX+2] < note[bIDX+2] :
+            return
+
+    elif status == 1: #무
+        aIDX = position[a]
+        bIDX = position[b]
+        note[aIDX+1] += 1
+        note[bIDX+1] += 1
+
+        if answer[aIDX+1] < note[aIDX+1] or answer[bIDX+1] < note[bIDX+1] :
+            return
+
+    elif status == 2:  # 패
+        aIDX = position[a]
+        bIDX = position[b]
+        note[aIDX + 2] += 1
+        note[bIDX] += 1
+
+        if answer[aIDX+2] < note[aIDX+2] or answer[bIDX] < note[bIDX] :
+            return
+
+    if depth == 15:
+        result[str(note)] = 1
+        return
+
+    nextA ,nextB = allMatch[depth]
+
+    match(nextA,nextB,0,note[:],depth+1)
+    match(nextA, nextB, 1, note[:], depth + 1)
+    match(nextA, nextB, 2, note[:], depth + 1)
+
+for i in range(4):
+    answer = list(map(int,input().split()))
+    note = answer[:]
+
+    match('A', 'B', 0, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 1)
+    match('A', 'B', 1, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 1)
+    match('A', 'B', 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 1)
+
+    if result.get(str(answer)) != None :
+        print(1, end=' ')
     else:
-        counter[s] = 1
-
-# 백트래킹 함수 호출하여 가능한 모든 경우의 수 계산
-answer = backtracking('', 0)
-
-# 결과 출력
-print(answer)
+        print(0, end=' ')
