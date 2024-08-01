@@ -1,41 +1,27 @@
-import sys
-
-input = sys.stdin.readline
-
-# 백트래킹 함수
-def backtracking( length, tmp_list ):
-    # 순열의 개수가 M개이면 answer에 추가
-    if length == M:
-        answer.append(tmp_list)
-        return
+def solution(n, times):
+    # 이분 탐색의 범위 설정
+    left = 1
+    right = max(times) * n
     
-    # 이전의 사용한 값
-    prev = 0
-    # N번 반복
-    for i in range(N):
-        # 방문하지 않은 곳이고 이전 사용한 값이 같이 않으면 순열 추가
-        if visited[i] == 0 and prev != input_list[i]:
-            prev = input_list[i]
-            visited[i] = 1
-            backtracking(length + 1, tmp_list+[input_list[i]])
-            visited[i] = 0
+    # 이분 탐색
+    while left <= right:
+        mid = (left + right) // 2
         
-# N과 M 입력
-N, M = map(int, input().strip().split())
+        # 중간 시간 동안 각 심사관이 처리할 수 있는 사람의 수 계산
+        total_people = sum(mid // time for time in times)
+        
+        # 모든 사람이 심사를 받을 수 있는지 확인
+        if total_people >= n:
+            right = mid - 1
+        else:
+            left = mid + 1
+    
+    # 최소 시간 반환
+    return left
 
-# 자연수 N개 입력
-input_list = list(map(int, input().strip().split()))
+# 예제 입력
+n = 6
+times = [7, 10]
 
-# 오름차순 정렬
-input_list.sort()
-
-# 방문 여부
-visited = [0] * N
-answer = []
-
-# 백트래킹 시작
-backtracking(0, [])
-
-# 순열 출력
-for line in answer:
-    print(*line)
+# 예제 출력
+print(solution(n, times))  # 28
